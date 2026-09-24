@@ -7,8 +7,15 @@ function pauseOthers(ele) {
 </script>
 ## Overview
 <p align="justify">
-Text-to-Music personalization introduces a new concept, as provided by users, into a pre-trained text-to-music model. By leveraging the robust capabilities of the pre-trained model, it facilitates the personalized and customized creation of musical concepts properly. However, existing work lacks the capability to combine multiple new concepts provided by users, which is essential as users often wish to control and combine various personalized music concepts in their wanted ways. To address the aforementioned challenge, we introduce for the first time the task of multi-concept personalization within the text-to-music Diffusion Model. We propose a novel multi-concept personalization method, MultiSound, that fine-tunes the pre-trained model in a joint manner. This is achieved by adjusting the Key and Value weight matrices within the cross-attention layers, enabling a more parameter-efficient and expressively rich multi-concept personalized generation. Furthermore, we employ a novel regularization approach for multi-concept music personalization, designated as the Multi-Prior Preservation, to better maintain pre-trained model’s ability of composing multiple concepts after joint fine-tuning. To the best of our knowledge, MultiSound achieves the state-of-the-art performance in the task of multi-concept personalization. It excels in concept reconstruction metrics, including CLAP-A, FAD-PANN, and FAD-VGG, as well as in the concept editability metric, CLAP-T. The effectiveness of our proposed multi-concept personalization method has been validated by a comprehensive human evaluation study.
+Text-to-music personalization adapts a pre-trained model to a user-provided musical concept. Combining multiple personalized concepts while retaining textual control remains challenging. We study this setting with MultiSound, which jointly fine-tunes an AudioLDM model on samples from different concepts. The method selects Key and Value projection weights in U-Net attention modules to reduce storage requirements. We also investigate Multi-Prior Preservation, using ensemble examples to regularize joint adaptation. Experiments examine single-concept reconstruction, whole-ensemble text alignment, parameter subsets, and human preferences. The prior comparison suggests a trade-off between reconstruction and text alignment, while the compact adaptation weights require substantially less storage than a full U-Net. Human evaluation compares joint generation with mixtures of separately generated concepts and assesses alignment with textual prompts.
 </p>
+
+## Task illustration
+
+<figure class="paper-figure task-figure">
+  <a href="assets/image/task-overview.png"><img src="assets/image/task-overview.png" alt="Two reference musical concepts combined through prompts describing a duet, musical style, and acoustic setting." loading="lazy"></a>
+  <figcaption>Multi-concept music personalization: reference concepts can be combined with prompts specifying their interaction, musical style, and acoustic setting.</figcaption>
+</figure>
 
 ## Methodology
 
@@ -24,6 +31,25 @@ An illustration of our proposed fine-tuning strategy. We introduce a new trainab
 
 <p align="center">Figure.1 The overall architecture of proposed fine-tuning strategy.</p>
 
+## Additional qualitative results
+
+The following figures show reference spectrograms on the left and generated examples under different prompts on the right. Click a figure to view it at full resolution. Audio examples for the same concept pairs are linked below; the plots are qualitative illustrations, not source-separated instrument evaluations.
+
+<figure class="paper-figure">
+  <a href="assets/image/results-cajon-gtr.png"><img src="assets/image/results-cajon-gtr.png" alt="Cajon and guitar reference spectrograms and generated examples for duet, hip hop, background, and small-room prompts." loading="lazy"></a>
+  <figcaption>Cajon + guitar. <a href="#audio-cajon-gtr">Listen to examples for this concept pair</a>.</figcaption>
+</figure>
+
+<figure class="paper-figure">
+  <a href="assets/image/results-ode-rumaba.png"><img src="assets/image/results-ode-rumaba.png" alt="Classical music and drum beat reference spectrograms and generated examples under four types of prompts." loading="lazy"></a>
+  <figcaption>Ode + rumaba. <a href="#audio-ode-rumaba">Listen to examples for this concept pair</a>.</figcaption>
+</figure>
+
+<figure class="paper-figure">
+  <a href="assets/image/results-shehnai-tsifteteli.png"><img src="assets/image/results-shehnai-tsifteteli.png" alt="Wind instrument and drum beat reference spectrograms and generated examples under four types of prompts." loading="lazy"></a>
+  <figcaption>Shehnai + tsifteteli. <a href="#audio-shehnai-tsifteteli">Listen to examples for this concept pair</a>.</figcaption>
+</figure>
+
 ## Editability of music concepts
 <p align="justify">We present multiple models, each fine-tuned with different pairs of concepts. These models enable the generation of combined concepts and support prompt-based control for precise generation of music concepts.</p>
 
@@ -31,6 +57,11 @@ An illustration of our proposed fine-tuning strategy. We introduce a new trainab
 
 
 <style>
+.paper-figure { margin: 1.5rem 0 2.5rem; }
+.paper-figure img { display: block; width: 100%; height: auto; }
+.task-figure { max-width: 760px; margin-left: auto; margin-right: auto; }
+.paper-figure figcaption { margin-top: .65rem; text-align: center; color: #52636b; font-size: .95rem; }
+
 .main-content table {
     display: inline-table;
 }
@@ -39,13 +70,13 @@ table {
     width: 100%;
     overflow: hidden;
 }
-#player{
+.audio-player{
     width: 100%;
 }
 </style>
 
 <p>&nbsp;</p>
-1.cajon+gtr<br>
+<h3 id="audio-cajon-gtr">1. cajon + gtr</h3>
 
 <table>
     <tr>
@@ -55,10 +86,10 @@ table {
         <th> a recording of a &lt;new1&gt; percussion and &lt;new2&gt; guitar playing together in a small room</th>
     </tr>
     <tr>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/cajon_gtr/trained_pipeline_step400/editability_audio/a duet between <new1> percussion and <new2> guitar/a_duet_between_<new1>_percussion_and_<new2>_guitar_9.wav" type="audio/mpeg"></audio> </th>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/cajon_gtr/trained_pipeline_step400/editability_audio/a duet featuring a <new1> percussion and a <new2> guitar in a hip hop song/a_duet_featuring_a_<new1>_percussion_and_a_<new2>_guitar_in_a_hip_hop_song_9.wav" type="audio/mpeg"></audio> </th>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/cajon_gtr/trained_pipeline_step400/editability_audio/a recording of <new1> percussion in the background and <new2> guitar/a_recording_of_<new1>_percussion_in_the_background_and_<new2>_guitar_9.wav" type="audio/mpeg"></audio> </th>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/cajon_gtr/trained_pipeline_step400/editability_audio/a recording of a <new1> percussion and <new2> guitar playing together in a small room/a_recording_of_a_<new1>_percussion_and_<new2>_guitar_playing_together_in_a_small_room_9.wav" type="audio/mpeg"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/cajon_gtr/trained_pipeline_step400/editability_audio/a duet between <new1> percussion and <new2> guitar/a_duet_between_<new1>_percussion_and_<new2>_guitar_9.wav" type="audio/wav"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/cajon_gtr/trained_pipeline_step400/editability_audio/a duet featuring a <new1> percussion and a <new2> guitar in a hip hop song/a_duet_featuring_a_<new1>_percussion_and_a_<new2>_guitar_in_a_hip_hop_song_9.wav" type="audio/wav"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/cajon_gtr/trained_pipeline_step400/editability_audio/a recording of <new1> percussion in the background and <new2> guitar/a_recording_of_<new1>_percussion_in_the_background_and_<new2>_guitar_9.wav" type="audio/wav"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/cajon_gtr/trained_pipeline_step400/editability_audio/a recording of a <new1> percussion and <new2> guitar playing together in a small room/a_recording_of_a_<new1>_percussion_and_<new2>_guitar_playing_together_in_a_small_room_9.wav" type="audio/wav"></audio> </th>
     </tr> 
 </table>
 <p>&nbsp;</p> 
@@ -72,10 +103,10 @@ table {
         <th> a recording of a &lt;new1&gt; guitar and &lt;new2&gt; percussion playing together in a small room</th>
     </tr>
     <tr>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/jingle_toere/trained_pipeline_step400/editability_audio/a duet between <new1> guitar and <new2> percussion/a_duet_between_<new1>_guitar_and_<new2>_percussion_15.wav" type="audio/mpeg"></audio> </th>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/jingle_toere/trained_pipeline_step400/editability_audio/a duet featuring a <new1> guitar and a <new2> percussion in a hip hop song/a_duet_featuring_a_<new1>_guitar_and_a_<new2>_percussion_in_a_hip_hop_song_3.wav" type="audio/mpeg"></audio> </th>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/jingle_toere/trained_pipeline_step400/editability_audio/a recording of <new1> guitar in the background and <new2> percussion/a_recording_of_<new1>_guitar_in_the_background_and_<new2>_percussion_9.wav" type="audio/mpeg"></audio> </th>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/jingle_toere/trained_pipeline_step400/editability_audio/a recording of a <new1> guitar and <new2> percussion playing together in a small room/a_recording_of_a_<new1>_guitar_and_<new2>_percussion_playing_together_in_a_small_room_9.wav" type="audio/mpeg"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/jingle_toere/trained_pipeline_step400/editability_audio/a duet between <new1> guitar and <new2> percussion/a_duet_between_<new1>_guitar_and_<new2>_percussion_15.wav" type="audio/wav"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/jingle_toere/trained_pipeline_step400/editability_audio/a duet featuring a <new1> guitar and a <new2> percussion in a hip hop song/a_duet_featuring_a_<new1>_guitar_and_a_<new2>_percussion_in_a_hip_hop_song_3.wav" type="audio/wav"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/jingle_toere/trained_pipeline_step400/editability_audio/a recording of <new1> guitar in the background and <new2> percussion/a_recording_of_<new1>_guitar_in_the_background_and_<new2>_percussion_9.wav" type="audio/wav"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/jingle_toere/trained_pipeline_step400/editability_audio/a recording of a <new1> guitar and <new2> percussion playing together in a small room/a_recording_of_a_<new1>_guitar_and_<new2>_percussion_playing_together_in_a_small_room_9.wav" type="audio/wav"></audio> </th>
     </tr> 
 </table>
 <p>&nbsp;</p>
@@ -89,10 +120,10 @@ table {
         <th> a recording of a &lt;new1&gt; percussion and &lt;new2&gt; string instrument playing together in a small room</th>
     </tr>
     <tr>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/kashaka_sitar/trained_pipeline_step400/editability_audio/a duet between <new1> percussion and <new2> string instrument/a_duet_between_<new1>_percussion_and_<new2>_string_instrument_9.wav" type="audio/mpeg"></audio> </th>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/kashaka_sitar/trained_pipeline_step400/editability_audio/a duet featuring a <new1> percussion and a <new2> string instrument in a hip hop song/a_duet_featuring_a_<new1>_percussion_and_a_<new2>_string_instrument_in_a_hip_hop_song_16.wav" type="audio/mpeg"></audio> </th>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/kashaka_sitar/trained_pipeline_step400/editability_audio/a recording of <new1> percussion in the background and <new2> string instrument/a_recording_of_<new1>_percussion_in_the_background_and_<new2>_string_instrument_7.wav" type="audio/mpeg"></audio> </th>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/kashaka_sitar/trained_pipeline_step400/editability_audio/a recording of a <new1> percussion and <new2> string instrument playing together in a small room/a_recording_of_a_<new1>_percussion_and_<new2>_string_instrument_playing_together_in_a_small_room_9.wav" type="audio/mpeg"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/kashaka_sitar/trained_pipeline_step400/editability_audio/a duet between <new1> percussion and <new2> string instrument/a_duet_between_<new1>_percussion_and_<new2>_string_instrument_9.wav" type="audio/wav"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/kashaka_sitar/trained_pipeline_step400/editability_audio/a duet featuring a <new1> percussion and a <new2> string instrument in a hip hop song/a_duet_featuring_a_<new1>_percussion_and_a_<new2>_string_instrument_in_a_hip_hop_song_16.wav" type="audio/wav"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/kashaka_sitar/trained_pipeline_step400/editability_audio/a recording of <new1> percussion in the background and <new2> string instrument/a_recording_of_<new1>_percussion_in_the_background_and_<new2>_string_instrument_7.wav" type="audio/wav"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/kashaka_sitar/trained_pipeline_step400/editability_audio/a recording of a <new1> percussion and <new2> string instrument playing together in a small room/a_recording_of_a_<new1>_percussion_and_<new2>_string_instrument_playing_together_in_a_small_room_9.wav" type="audio/wav"></audio> </th>
     </tr> 
 </table>
 <p>&nbsp;</p>
@@ -106,14 +137,14 @@ table {
         <th> a recording of &lt;new1&gt; classical music and &lt;new2&gt; wind instrument playing together in a small room</th>
     </tr>
     <tr>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/morricone_shehnai/trained_pipeline_step400/editability_audio/a duet between <new1> classical music and <new2> wind instrument/a_duet_between_<new1>_classical_music_and_<new2>_wind_instrument_9.wav" type="audio/mpeg"></audio> </th>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/morricone_shehnai/trained_pipeline_step400/editability_audio/a duet featuring a <new1> classical music and a <new2> wind instrument in a hip hop song/a_duet_featuring_a_<new1>_classical_music_and_a_<new2>_wind_instrument_in_a_hip_hop_song_9.wav" type="audio/mpeg"></audio> </th>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/morricone_shehnai/trained_pipeline_step400/editability_audio/a recording of <new1> classical music in the background and <new2> wind instrument/a_recording_of_<new1>_classical_music_in_the_background_and_<new2>_wind_instrument_9.wav" type="audio/mpeg"></audio> </th>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/morricone_shehnai/trained_pipeline_step400/editability_audio/a recording of a <new1> classical music and <new2> wind instrument playing together in a small room/a_recording_of_a_<new1>_classical_music_and_<new2>_wind_instrument_playing_together_in_a_small_room_9.wav" type="audio/mpeg"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/morricone_shehnai/trained_pipeline_step400/editability_audio/a duet between <new1> classical music and <new2> wind instrument/a_duet_between_<new1>_classical_music_and_<new2>_wind_instrument_9.wav" type="audio/wav"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/morricone_shehnai/trained_pipeline_step400/editability_audio/a duet featuring a <new1> classical music and a <new2> wind instrument in a hip hop song/a_duet_featuring_a_<new1>_classical_music_and_a_<new2>_wind_instrument_in_a_hip_hop_song_9.wav" type="audio/wav"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/morricone_shehnai/trained_pipeline_step400/editability_audio/a recording of <new1> classical music in the background and <new2> wind instrument/a_recording_of_<new1>_classical_music_in_the_background_and_<new2>_wind_instrument_9.wav" type="audio/wav"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/morricone_shehnai/trained_pipeline_step400/editability_audio/a recording of a <new1> classical music and <new2> wind instrument playing together in a small room/a_recording_of_a_<new1>_classical_music_and_<new2>_wind_instrument_playing_together_in_a_small_room_9.wav" type="audio/wav"></audio> </th>
     </tr> 
 </table>
 <p>&nbsp;</p>
-5.ode+rumaba<br>
+<h3 id="audio-ode-rumaba">5. ode + rumaba</h3>
 
 <table>
     <tr>
@@ -123,14 +154,14 @@ table {
         <th> a recording of &lt;new1&gt; classical music and &lt;new2&gt; drum beat playing together in a small room</th>
     </tr>
     <tr>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/ode_rumaba/trained_pipeline_step400/editability_audio/a duet between <new1> classical music and <new2> drum beat/a_duet_between_<new1>_classical_music_and_<new2>_drum_beat_9.wav" type="audio/mpeg"></audio> </th>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/ode_rumaba/trained_pipeline_step400/editability_audio/a duet featuring a <new1> classical music and a <new2> drum beat in a hip hop song/a_duet_featuring_a_<new1>_classical_music_and_a_<new2>_drum_beat_in_a_hip_hop_song_9.wav" type="audio/mpeg"></audio> </th>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/ode_rumaba/trained_pipeline_step400/editability_audio/a recording of <new1> classical music in the background and <new2> drum beat/a_recording_of_<new1>_classical_music_in_the_background_and_<new2>_drum_beat_9.wav" type="audio/mpeg"></audio> </th>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/ode_rumaba/trained_pipeline_step400/editability_audio/a recording of a <new1> classical music and <new2> drum beat playing together in a small room/a_recording_of_a_<new1>_classical_music_and_<new2>_drum_beat_playing_together_in_a_small_room_9.wav" type="audio/mpeg"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/ode_rumaba/trained_pipeline_step400/editability_audio/a duet between <new1> classical music and <new2> drum beat/a_duet_between_<new1>_classical_music_and_<new2>_drum_beat_9.wav" type="audio/wav"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/ode_rumaba/trained_pipeline_step400/editability_audio/a duet featuring a <new1> classical music and a <new2> drum beat in a hip hop song/a_duet_featuring_a_<new1>_classical_music_and_a_<new2>_drum_beat_in_a_hip_hop_song_9.wav" type="audio/wav"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/ode_rumaba/trained_pipeline_step400/editability_audio/a recording of <new1> classical music in the background and <new2> drum beat/a_recording_of_<new1>_classical_music_in_the_background_and_<new2>_drum_beat_9.wav" type="audio/wav"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/ode_rumaba/trained_pipeline_step400/editability_audio/a recording of a <new1> classical music and <new2> drum beat playing together in a small room/a_recording_of_a_<new1>_classical_music_and_<new2>_drum_beat_playing_together_in_a_small_room_9.wav" type="audio/wav"></audio> </th>
     </tr> 
 </table>
 <p>&nbsp;</p>
-6.shehnai+tsifteteli<br>
+<h3 id="audio-shehnai-tsifteteli">6. shehnai + tsifteteli</h3>
 
 <table>
     <tr>
@@ -140,10 +171,10 @@ table {
         <th> a recording of &lt;new1&gt; wind instrument and &lt;new2&gt; drum beat playing together in a small room</th>
     </tr>
     <tr>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/shehnai_tsifteteli/trained_pipeline_step400/editability_audio/a duet between <new1> wind instrument and <new2> drum beat/a_duet_between_<new1>_wind_instrument_and_<new2>_drum_beat_9.wav" type="audio/mpeg"></audio> </th>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/shehnai_tsifteteli/trained_pipeline_step400/editability_audio/a duet featuring a <new1> wind instrument and a <new2> drum beat in a hip hop song/a_duet_featuring_a_<new1>_wind_instrument_and_a_<new2>_drum_beat_in_a_hip_hop_song_9.wav" type="audio/mpeg"></audio> </th>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/shehnai_tsifteteli/trained_pipeline_step400/editability_audio/a recording of <new1> wind instrument in the background and <new2> drum beat/a_recording_of_<new1>_wind_instrument_in_the_background_and_<new2>_drum_beat_9.wav" type="audio/mpeg"></audio> </th>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/shehnai_tsifteteli/trained_pipeline_step400/editability_audio/a recording of a <new1> wind instrument and <new2> drum beat playing together in a small room/a_recording_of_a_<new1>_wind_instrument_and_<new2>_drum_beat_playing_together_in_a_small_room_9.wav" type="audio/mpeg"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/shehnai_tsifteteli/trained_pipeline_step400/editability_audio/a duet between <new1> wind instrument and <new2> drum beat/a_duet_between_<new1>_wind_instrument_and_<new2>_drum_beat_9.wav" type="audio/wav"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/shehnai_tsifteteli/trained_pipeline_step400/editability_audio/a duet featuring a <new1> wind instrument and a <new2> drum beat in a hip hop song/a_duet_featuring_a_<new1>_wind_instrument_and_a_<new2>_drum_beat_in_a_hip_hop_song_9.wav" type="audio/wav"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/shehnai_tsifteteli/trained_pipeline_step400/editability_audio/a recording of <new1> wind instrument in the background and <new2> drum beat/a_recording_of_<new1>_wind_instrument_in_the_background_and_<new2>_drum_beat_9.wav" type="audio/wav"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/shehnai_tsifteteli/trained_pipeline_step400/editability_audio/a recording of a <new1> wind instrument and <new2> drum beat playing together in a small room/a_recording_of_a_<new1>_wind_instrument_and_<new2>_drum_beat_playing_together_in_a_small_room_9.wav" type="audio/wav"></audio> </th>
     </tr> 
 </table>
 <p>&nbsp;</p>
@@ -164,10 +195,10 @@ reconstruction prompt for gtr: a recording of &lt;new2&gt; guitar<br>
         <th> reconstruction audio(gtr)</th>
     </tr>
     <tr>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/cajon_gtr/training_audio/cajon/cajon_60.0-70.0.wav" type="audio/mpeg"></audio> </th>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/cajon_gtr/trained_pipeline_step400/reconstruction_audio/cajon/a_recording_of_<new1>_percussion_0.wav" type="audio/mpeg"></audio> </th>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/cajon_gtr/training_audio/gtr/1.wav" type="audio/mpeg"></audio> </th>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/cajon_gtr/trained_pipeline_step400/reconstruction_audio/gtr/a_recording_of_<new2>_guitar_0.wav" type="audio/mpeg"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/cajon_gtr/training_audio/cajon/cajon_60.0-70.0.wav" type="audio/wav"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/cajon_gtr/trained_pipeline_step400/reconstruction_audio/cajon/a_recording_of_<new1>_percussion_0.wav" type="audio/wav"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/cajon_gtr/training_audio/gtr/1.wav" type="audio/wav"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/cajon_gtr/trained_pipeline_step400/reconstruction_audio/gtr/a_recording_of_<new2>_guitar_0.wav" type="audio/wav"></audio> </th>
     </tr> 
 </table>
 <p>&nbsp;</p> 
@@ -183,10 +214,10 @@ reconstruction prompt for toere: a recording of &lt;new2&gt; percussion<br>
         <th> reconstruction audio(toere)</th>
     </tr>
     <tr>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/jingle_toere/training_audio/jingle/jingle_29.0-39.0.wav" type="audio/mpeg"></audio> </th>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/jingle_toere/trained_pipeline_step400/reconstruction_audio/jingle/a_recording_of_<new1>_guitar_10.wav" type="audio/mpeg"></audio> </th>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/jingle_toere/training_audio/toere/toere_10.0-20.0.wav" type="audio/mpeg"></audio> </th>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/jingle_toere/trained_pipeline_step400/reconstruction_audio/toere/a_recording_of_<new2>_percussion_1.wav" type="audio/mpeg"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/jingle_toere/training_audio/jingle/jingle_29.0-39.0.wav" type="audio/wav"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/jingle_toere/trained_pipeline_step400/reconstruction_audio/jingle/a_recording_of_<new1>_guitar_10.wav" type="audio/wav"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/jingle_toere/training_audio/toere/toere_10.0-20.0.wav" type="audio/wav"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/jingle_toere/trained_pipeline_step400/reconstruction_audio/toere/a_recording_of_<new2>_percussion_1.wav" type="audio/wav"></audio> </th>
     </tr> 
 </table>
 3.kashaka+sitar<br>
@@ -201,10 +232,10 @@ reconstruction prompt for sitar: a recording of &lt;new2&gt; string instrument<b
         <th> reconstruction audio(sitar)</th>
     </tr>
     <tr>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/kashaka_sitar/training_audio/kashaka/kashaka_0.0-10.0.wav" type="audio/mpeg"></audio> </th>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/kashaka_sitar/trained_pipeline_step400/reconstruction_audio/kashaka/a_recording_of_<new1>_percussion_5.wav" type="audio/mpeg"></audio> </th>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/kashaka_sitar/training_audio/sitar/sitar_30.0-40.0.wav" type="audio/mpeg"></audio> </th>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/kashaka_sitar/trained_pipeline_step400/reconstruction_audio/sitar/a_recording_of_<new2>_string_instrument_15.wav" type="audio/mpeg"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/kashaka_sitar/training_audio/kashaka/kashaka_0.0-10.0.wav" type="audio/wav"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/kashaka_sitar/trained_pipeline_step400/reconstruction_audio/kashaka/a_recording_of_<new1>_percussion_5.wav" type="audio/wav"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/kashaka_sitar/training_audio/sitar/sitar_30.0-40.0.wav" type="audio/wav"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/kashaka_sitar/trained_pipeline_step400/reconstruction_audio/sitar/a_recording_of_<new2>_string_instrument_15.wav" type="audio/wav"></audio> </th>
     </tr> 
 </table>
 4.morricone+shehnai<br>
@@ -219,10 +250,10 @@ reconstruction prompt for shehnai: a recording of &lt;new2&gt; wind instrument<b
         <th> reconstruction audio(shehnai)</th>
     </tr>
     <tr>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/morricone_shehnai/training_audio/morricone/morricone_30.0-40.0.wav" type="audio/mpeg"></audio> </th>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/morricone_shehnai/trained_pipeline_step400/reconstruction_audio/morricone/a_recording_of_<new1>_classical_music_16.wav" type="audio/mpeg"></audio> </th>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/morricone_shehnai/training_audio/shehnai/shehnai_100.0-110.0.wav" type="audio/mpeg"></audio> </th>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/morricone_shehnai/trained_pipeline_step400/reconstruction_audio/shehnai/a_recording_of_<new2>_wind_instrument_2.wav" type="audio/mpeg"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/morricone_shehnai/training_audio/morricone/morricone_30.0-40.0.wav" type="audio/wav"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/morricone_shehnai/trained_pipeline_step400/reconstruction_audio/morricone/a_recording_of_<new1>_classical_music_16.wav" type="audio/wav"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/morricone_shehnai/training_audio/shehnai/shehnai_100.0-110.0.wav" type="audio/wav"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/morricone_shehnai/trained_pipeline_step400/reconstruction_audio/shehnai/a_recording_of_<new2>_wind_instrument_2.wav" type="audio/wav"></audio> </th>
     </tr> 
 </table>
 5.ode+rumaba<br>
@@ -237,10 +268,10 @@ reconstruction prompt for rumaba: a recording of &lt;new2&gt; drum beat<br>
         <th> reconstruction audio(rumaba)</th>
     </tr>
     <tr>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/ode_rumaba/training_audio/ode/ode_450.0-460.0.wav" type="audio/mpeg"></audio> </th>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/ode_rumaba/trained_pipeline_step400/reconstruction_audio/ode/a_recording_of_<new1>_classical_music_5.wav" type="audio/mpeg"></audio> </th>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/ode_rumaba/training_audio/rumaba/rumaba_10.0-20.0.wav" type="audio/mpeg"></audio> </th>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/ode_rumaba/trained_pipeline_step400/reconstruction_audio/rumaba/a_recording_of_<new2>_drum_beat_7.wav" type="audio/mpeg"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/ode_rumaba/training_audio/ode/ode_450.0-460.0.wav" type="audio/wav"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/ode_rumaba/trained_pipeline_step400/reconstruction_audio/ode/a_recording_of_<new1>_classical_music_5.wav" type="audio/wav"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/ode_rumaba/training_audio/rumaba/rumaba_10.0-20.0.wav" type="audio/wav"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/ode_rumaba/trained_pipeline_step400/reconstruction_audio/rumaba/a_recording_of_<new2>_drum_beat_7.wav" type="audio/wav"></audio> </th>
     </tr> 
 </table>
 6.shehnai+tsifteteli<br>
@@ -255,10 +286,10 @@ reconstruction prompt for tsifteteli: a recording of &lt;new2&gt; drum beat<br>
         <th> reconstruction audio(tsifteteli)</th>
     </tr>
     <tr>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/shehnai_tsifteteli/training_audio/shehnai/shehnai_100.0-110.0.wav" type="audio/mpeg"></audio> </th>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/shehnai_tsifteteli/trained_pipeline_step400/reconstruction_audio/shehnai/a_recording_of_<new1>_wind_instrument_15.wav" type="audio/mpeg"></audio> </th>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/shehnai_tsifteteli/training_audio/tsifteteli/tsifteteli_40.0-50.0.wav" type="audio/mpeg"></audio> </th>
-        <th> <audio controls id="player" onplay="pauseOthers(this);"><source src="assets/log_audios/shehnai_tsifteteli/trained_pipeline_step400/reconstruction_audio/tsifteteli/a_recording_of_<new2>_drum_beat_19.wav" type="audio/mpeg"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/shehnai_tsifteteli/training_audio/shehnai/shehnai_100.0-110.0.wav" type="audio/wav"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/shehnai_tsifteteli/trained_pipeline_step400/reconstruction_audio/shehnai/a_recording_of_<new1>_wind_instrument_15.wav" type="audio/wav"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/shehnai_tsifteteli/training_audio/tsifteteli/tsifteteli_40.0-50.0.wav" type="audio/wav"></audio> </th>
+        <th> <audio controls class="audio-player" onplay="pauseOthers(this);"><source src="assets/log_audios/shehnai_tsifteteli/trained_pipeline_step400/reconstruction_audio/tsifteteli/a_recording_of_<new2>_drum_beat_19.wav" type="audio/wav"></audio> </th>
     </tr> 
 </table>
 
